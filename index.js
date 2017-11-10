@@ -3,6 +3,9 @@
  *  Github: https://github.com/AlloyTeam/hwLever
  *  MIT Licensed.
  */
+import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
+
 ; (function (root, factory) {
     if (typeof exports === 'object' && typeof module === 'object')
         module.exports = factory()
@@ -76,8 +79,10 @@
         // loadScript(hwLever.settings.ravenUrl, function() {
 
         // })
-        console.log(hwLever.settings.ravenId)
-        Raven.config(hwLever.settings.ravenId).install();
+        Raven
+            .config('http://56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12')
+            .addPlugin(RavenVue, Vue)
+            .install();
     }
 
     hwLever.vConsole = function (show) {

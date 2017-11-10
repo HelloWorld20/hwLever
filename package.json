@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/HelloWorld20/hwLever/issues"
   },
-  "homepage": "https://github.com/HelloWorld20/hwLever#readme"
+  "homepage": "https://github.com/HelloWorld20/hwLever#readme",
+  "dependencies": {
+    "raven-js": "^3.19.1"
+  }
 }
