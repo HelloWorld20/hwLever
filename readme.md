@@ -7,12 +7,20 @@
 ## 使用方法
 
 
-安装好依赖
+1. 安装好依赖
 
-	npm install git@github.com:HelloWorld20/hwLever.git --save
+	npm install https://github.com/HelloWorld20/hwLever.git
 	
-main.js中引入并配置hwLever
+2. 手动进入hwLever路径下安装依赖
 
+	cd node_modules/hwLever
+	
+	npm i
+	
+	
+3. main.js中引入并配置hwLever
+
+	```js
 	import hwLever from 'hwlever';
 	
 	hwlever.config({
@@ -21,8 +29,11 @@ main.js中引入并配置hwLever
     	vueObj: Vue,
     	ravenId: 'http://56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
 	})
+	```
 
-就OK了。
+
+4. 万事大吉
+
 
 ## 配置说明
 
