@@ -1,6 +1,6 @@
 /*!
- *  hwLever v1.0.2 By dntzhang
- *  Github: https://github.com/AlloyTeam/hwLever
+ *  hwLever v1.0.2 By weijianghong
+ *  Github: https://github.com/HelloWorld20/hwLever
  *  MIT Licensed.
  */
 
@@ -25,14 +25,11 @@ var RavenVue = require('raven-js/plugins/vue')
 
         var hwLever = {}
         hwLever.settings = {
-            cdn: '//s.url.cn/qqun/qun/qqweb/m/qun/confession/js/vconsole.min.js',
-            reportUrl: null,
-            reportPrefix: '',
-            reportKey: 'msg',
-            otherReport: null,
+            cdn: '//24haowan-cdn.shanyougame.com/public/js/vconsole.min.js',
             entry: null,
             ravenId: 'http://56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
-            vueObj: null
+            vueObj: null,
+            extrConf: null
         }
 
         hwLever.store = []
@@ -52,6 +49,7 @@ var RavenVue = require('raven-js/plugins/vue')
         });
 
         hwLever.logs = []
+
         hwLever.config = function (config) {
             for (var i in config) {
                 if (config.hasOwnProperty(i)) {
@@ -77,14 +75,10 @@ var RavenVue = require('raven-js/plugins/vue')
 
             // hwLever.EasterEgg();
 
-            hwLever.sentry();
-        }
-
-        hwLever.sentry = function () {
             var settings = hwLever.settings;
 
             Raven
-                .config(settings.ravenId)
+                .config(settings.ravenId, settings.extrConf)
                 .addPlugin(RavenVue, settings.vueObj)
                 .install();
         }
@@ -167,18 +161,6 @@ var RavenVue = require('raven-js/plugins/vue')
                 console.error(newMsg)
             }
 
-            var ss = hwLever.settings
-            if (ss.reportUrl) {
-                var src = ss.reportUrl + (ss.reportUrl.indexOf('?') > -1 ? '&' : '?') + ss.reportKey + '=' + (ss.reportPrefix ? ('[' + ss.reportPrefix + ']') : '') + newMsg + '&t=' + new Date().getTime()
-                if (ss.otherReport) {
-                    for (var i in ss.otherReport) {
-                        if (ss.otherReport.hasOwnProperty(i)) {
-                            src += '&' + i + '=' + ss.otherReport[i]
-                        }
-                    }
-                }
-                new Image().src = src
-            }
         }
 
 

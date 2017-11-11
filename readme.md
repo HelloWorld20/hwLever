@@ -9,19 +9,22 @@
 
 1. 安装好依赖
 
-	npm install https://github.com/HelloWorld20/hwLever.git
+
+		npm install https://github.com/HelloWorld20/hwLever.git
+	
 	
 2. 手动进入hwLever路径下安装依赖
 
-	cd node_modules/hwLever
+
+		cd node_modules/hwLever
 	
-	npm i
+		npm i
 	
 	
 3. main.js中引入并配置hwLever
 
 	```js
-	import hwLever from 'hwlever';
+	import hwlever from 'hwlever';
 	
 	hwlever.config({
     	cdn: '//24haowan-cdn.shanyougame.com/public/js/vconsole.min.js',  //vconsole的CDN地址
