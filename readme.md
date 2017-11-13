@@ -13,7 +13,7 @@
 		npm install https://github.com/HelloWorld20/hwLever.git
 	
 	
-2. 手动进入hwLever路径下安装依赖
+2. 手动进入hwLever路径下安装依赖（暂时没找到不能自动安装的问题）
 
 
 		cd node_modules/hwLever
@@ -28,7 +28,7 @@
 	
 	hwlever.config({
     	cdn: '//24haowan-cdn.shanyougame.com/public/js/vconsole.min.js',  //vconsole的CDN地址
-    	entry: ".content",          //请点击这个DOM元素6次召唤vConsole。//你可以通过AlloyLever.entry('#entry2')设置多个机关入口召唤神龙
+		entry: 'eastEgg',		// 点击6下，id为eastEgg的元素6下。召唤神龙
     	vueObj: Vue,
     	ravenId: 'http://56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
 	})
@@ -38,33 +38,73 @@
 4. 万事大吉
 
 
-## 配置说明
+## 默认配置
 
-AlloyTeam的配置还完整保留
-
-	AlloyLever.config({
-	    cdn:'//s.url.cn/qqun/qun/qqweb/m/qun/confession/js/vconsole.min.js',  //vconsole的CDN地址
-	    reportUrl: "//a.qq.com",  //错误上报地址
-	    reportPrefix: 'qun',    //错误上报msg前缀，一般用于标识业务类型
-	    reportKey: 'msg',        //错误上报msg前缀的key，用户上报系统接收存储msg
-	    otherReport: {              //需要上报的其他信息
-	        uin: 491862102
-	    },
-	    entry:"#entry"          //请点击这个DOM元素6次召唤vConsole。//你可以通过AlloyLever.entry('#entry2')设置多个机关入口召唤神龙
-	})
-	
-	
-新增了两个配置：
 
 	hwlever.config({
-		    cdn:'//s.url.cn/qqun/qun/qqweb/m/qun/confession/js/vconsole.min.js',  //vconsole的CDN地址
-		    entry:"#entry"          //请点击这个DOM元素6次召唤vConsole。//你可以通过AlloyLever.entry('#entry2')设置多个机关入口召唤神龙
-		    ravenId: 'https://<key>@sentry.io/<project>',		// sentry配置的id
-		    vueObj: Vue		// Vue对象。会监听这个Vue对象下的所有错误
-		})
+            cdn: '//24haowan-cdn.shanyougame.com/public/js/vconsole.min.js',
+            entry: null,
+            ravenId: 'http://56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
+            vueObj: null,
+            extrConf: null,
+            // 选择配置的触发方式：['touch', 'click', 'swipe', 'shake']
+            // 分别是：按顺序点击、点击某个元素6次、滑动手势、晃动手机
+            type: null,
+            DEVIATION: 100,                             // 允许误差，像素
+            // 点击位置队列，0~100之间，屏幕比例。
+            // 默认：1、左下角；2、右下角。
+            touchKey: [
+                {
+                    x: 5,
+                    y: 95
+                },
+                {
+                    x: 95,
+                    y: 95
+                }
+            ],
+            // 滑动距离队列，0~100之间，屏幕比例。
+            // 默认：打叉手势，距离为屏幕宽度的30%和屏幕高度的30%
+            swipeKey: [
+                {
+                    x: -30,
+                    y: 30
+                },
+                {
+                    x: 30,
+                    y: 30
+                }
 
+            ]
+        })
+
+## 配置说明
+
+cdn：vconsole cdn地址；
+
+entry：要点击6次召唤的dom对象id值；
+
+ravenId: sentry上报的id；
+
+vueObj：要监听错误的vue对象，一般就在main.js里配置，然后传入Vue对象
+
+type: 要设置触发类型的字符串数组，支持['touch', 'click', 'swipe', 'shake']，分别对应：按顺序点击、点击某个元素6次、滑动手势、晃动手机
+
+DEVIATION：按顺序点击和滑动允许的误差，单位是像素
+
+touchKey：可配置的点击顺序，相对于屏幕比例位置，所以填入的值应该是0~100之间，
+
+swipeKey: 可配置的滑动手势配置，相对于屏幕比例位置，0~100之间。
+
+
+ 
 
 ## 版本说明
 
 * v1.0.0: 未完成版，不保证能用
 * v1.1.1: 基础版本，保留所有AlloyLever功能，只结合Sentry的错误上报
+* v1.2.0: 
+	* 去除AlloyLever上报路径功能
+	* 点击召唤神龙参数从jquery选择器改为id。
+	* 添加按顺序滑动、按顺序点击、摇一摇召唤姿势
+	* 添加一个extraConf配置用于传递sentry的额外配置

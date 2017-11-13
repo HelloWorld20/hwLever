@@ -21,15 +21,42 @@ var RavenVue = require('raven-js/plugins/vue')
             root["hwLever"] = factory()
     })(this, function () {
 
-
-
         var hwLever = {}
         hwLever.settings = {
             cdn: '//24haowan-cdn.shanyougame.com/public/js/vconsole.min.js',
             entry: null,
             ravenId: 'http://56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
             vueObj: null,
-            extrConf: null
+            extrConf: null,
+            // 选择配置的触发方式：['touch', 'click', 'swipe', 'shake']
+            // 分别是：按顺序点击、点击某个元素6次、滑动手势、晃动手机
+            type: null,
+            DEVIATION: 100,                             // 允许误差，像素
+            // 点击位置队列，0~100之间，屏幕比例。
+            // 默认：1、左下角；2、右下角。
+            touchKey: [
+                {
+                    x: 5,
+                    y: 95
+                },
+                {
+                    x: 95,
+                    y: 95
+                }
+            ],
+            // 滑动距离队列，0~100之间，屏幕比例。
+            // 默认：打叉手势，距离为屏幕宽度的30%和屏幕高度的30%
+            swipeKey: [
+                {
+                    x: -30,
+                    y: 30
+                },
+                {
+                    x: 30,
+                    y: 30
+                }
+
+            ]
         }
 
         hwLever.store = []
@@ -120,16 +147,15 @@ var RavenVue = require('raven-js/plugins/vue')
         }
 
         hwLever.entry = function (selector) {
-            var count = 0,
-                entry = document.querySelector(selector)
-            if (entry) {
-                entry.addEventListener('click', function () {
-                    count++
-                    if (count > 5) {
-                        count = -10000
-                        hwLever.vConsole(true)
-                    }
-                })
+            var type = hwLever.settings.type
+            for (var i in type) {
+                console.log(type, type[i])
+                switch (type[i]) {
+                    case 'touch': initTouch(); break;
+                    case 'click': initClick(selector); break;
+                    case 'swipe': initSwipe(); break;
+                    case 'shake': initShake(); break;
+                }
             }
         }
 
@@ -163,7 +189,116 @@ var RavenVue = require('raven-js/plugins/vue')
 
         }
 
+        function initClick(selector) {
+            var count = 0,
+                entry = hwLever.settings.entry
+            if (selector) {
+                document.addEventListener('click', function (e) {
+                    if (e.target.getAttribute('id') == entry) {
+                        count++
+                        if (count > 5) {
+                            count = -10000
+                            hwLever.vConsole(true)
+                        }
+                    }
+                })
+            }
+        }
 
+        function initShake() {
+            //摇一摇(使用DeviceMotion事件, 推荐,应为可以计算加速度)
+            if (window.DeviceMotionEvent) {
+                var speed = 25;    // 用来判定的加速度阈值，太大了则很难触发
+                var x, y, z, lastX, lastY, lastZ;
+                x = y = z = lastX = lastY = lastZ = 0;
+
+                window.addEventListener('devicemotion', handleMotion, false);
+
+                function handleMotion() {
+                    var acceleration = event.accelerationIncludingGravity;
+                    x = acceleration.x;
+                    y = acceleration.y;
+                    if (Math.abs(x - lastX) > speed || Math.abs(y - lastY) > speed) {
+                        // 用户设备摇动了，触发响应操作
+                        // 此处的判断依据是用户设备的加速度大于我们设置的阈值
+                        hwLever.vConsole(true)
+                        window.removeEventListener('devicemotion', handleMotion)
+                    }
+                    lastX = x;
+                    lastY = y;
+
+                }
+            }
+        }
+
+        function initSwipe() {
+            var DEVIATION = hwLever.settings.DEVIATION;
+
+            var swipeKey = hwLever.settings.swipeKey;
+
+            var keyLen = swipeKey.length;
+            var checkIndex = 0;
+
+            document.addEventListener('touchstart', handleTouchStart, false);
+            document.addEventListener('touchend', handleTouchEnd, false);
+
+            var startX, startY, endX, endY;
+
+            function handleTouchStart(event) {
+                startX = event.touches[0].clientX;
+                startY = event.touches[0].clientY;
+            }
+
+            function handleTouchEnd(event) {
+                endX = event.changedTouches[0].clientX;
+                endY = event.changedTouches[0].clientY;
+                if (Math.abs((endX - startX) - swipeKey[checkIndex].x * innerWidth / 100) < DEVIATION && Math.abs((endY - startY) - swipeKey[checkIndex].y * innerHeight / 100) < DEVIATION) {
+                    checkIndex++
+                } else {
+                    checkIndex = 0
+                }
+
+                if (checkIndex >= keyLen) {
+                    hwLever.vConsole(true)
+                    document.removeEventListener('touchstart', handleTouchStart)
+                    document.removeEventListener('touchend', handleTouchEnd)
+                    checkIndex = 0
+                }
+            }
+        }
+
+        function initTouch() {
+            // 触摸范围，像素
+            var DEVIATION = hwLever.settings.DEVIATION
+            // 触摸顺序，x和y分别是屏幕位置比例。以左上角为坐标原点。
+            var touchKey = hwLever.settings.touchKey
+
+            var keyLen = touchKey.length
+            var checkIndex = 0
+
+            document.addEventListener('touchstart', handleTouch, false);
+
+            function handleTouch(event) {
+                var clientX = event.touches[0].clientX
+                var clientY = event.touches[0].clientY
+
+                var keyX = touchKey[checkIndex].x * innerWidth / 100
+                var keyY = touchKey[checkIndex].y * innerHeight / 100
+
+                if (Math.abs(clientX - keyX) < DEVIATION && Math.abs(clientY - keyY) < DEVIATION) {
+                    checkIndex++
+                } else {
+                    checkIndex = 0
+                }
+
+                if (checkIndex >= keyLen) {
+                    hwLever.vConsole(true)
+                    document.removeEventListener('touchstart', handleTouch)
+                    checkIndex = 0
+                }
+
+            }
+        }
 
         function loadScript(src, callback) {
             var s,
