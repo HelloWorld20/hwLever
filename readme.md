@@ -4,6 +4,12 @@
 
 因为sentry里是否使用vue的使用方法不太一样，所以这个版本先是针对vue而编写的插件，后期在写个通用的版本。
 
+## 在线demo
+
+[https://24haowan-cdn.shanyougame.com/dingzhi/hwlever_demo/index.html](https://24haowan-cdn.shanyougame.com/dingzhi/hwlever_demo/index.html)
+
+[https://24haowan-cdn.shanyougame.com/dingzhi/hwlever_demo/index.html?vconsole=show](https://24haowan-cdn.shanyougame.com/dingzhi/hwlever_demo/index.html?vconsole=show)
+
 ## 使用方法
 
 
