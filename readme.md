@@ -16,10 +16,10 @@
 1. 安装好依赖
 
 
-		npm install https://github.com/HelloWorld20/hwLever.git
+		npm install https://github.com/HelloWorld20/hwLever.git --save
+			
 	
-	
-2. 手动进入hwLever路径下安装依赖（暂时没找到不能自动安装的问题）
+2. 某些情况下（应该是npm版本问题）hwLever不能正确安装raven-js依赖，则需要手动进入hwLever路径下安装依赖
 
 
 		cd node_modules/hwLever
