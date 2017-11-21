@@ -27,6 +27,7 @@ var RavenVue = require('raven-js/plugins/vue')
             entry: null,
             ravenId: 'http://56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
             vueObj: null,
+            debug: false,
             extrConf: null,
             // 选择配置的触发方式：['touch', 'click', 'swipe', 'shake']
             // 分别是：按顺序点击、点击某个元素6次、滑动手势、晃动手机
@@ -104,10 +105,12 @@ var RavenVue = require('raven-js/plugins/vue')
 
             var settings = hwLever.settings;
 
-            Raven
-                .config(settings.ravenId, settings.extrConf)
-                .addPlugin(RavenVue, settings.vueObj)
-                .install();
+            if(settings.debug) {
+                Raven
+                    .config(settings.ravenId, settings.extrConf)
+                    .addPlugin(RavenVue, settings.vueObj)
+                    .install();
+            }
         }
 
         hwLever.vConsole = function (show) {
