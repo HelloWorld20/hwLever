@@ -107,6 +107,7 @@ var RavenVue = require('raven-js/plugins/vue')
 
             if(settings.debug) {
                 hwLever.vConsole(false);
+            } else {
                 Raven
                     .config(settings.ravenId, settings.extrConf)
                     .addPlugin(RavenVue, settings.vueObj)
